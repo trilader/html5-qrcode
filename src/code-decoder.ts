@@ -16,13 +16,13 @@ import {
     RobustQrcodeDecoderAsync,
 } from "./core";
 
-import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder";
+import { ZXingWasmQrcodeDecoder } from "./zxing-wasm-qrcode-decoder";
 import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
 
 /**
  * Shim layer for {@interface QrcodeDecoder}.
  * 
- * Currently uses {@class ZXingHtml5QrcodeDecoder}, can be replace with another library.
+ * Currently uses {@class ZXingWasmQrcodeDecoder}, can be replace with another library.
  */
 export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     
@@ -50,10 +50,10 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
             // If 'BarcodeDetector' is supported, the library will alternate
             // between 'BarcodeDetector' and 'zxing-js' to compensate for
             // quality gaps between the two.
-            this.secondaryDecoder = new ZXingHtml5QrcodeDecoder(
+            this.secondaryDecoder = new ZXingWasmQrcodeDecoder(
                 requestedFormats, verbose, logger);
         } else {
-            this.primaryDecoder = new ZXingHtml5QrcodeDecoder(
+            this.primaryDecoder = new ZXingWasmQrcodeDecoder(
                 requestedFormats, verbose, logger);
         }
     }
