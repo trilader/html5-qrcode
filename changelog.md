@@ -1,3 +1,7 @@
+### Version 2.4.0
+-   Use [zxing-wasm](https://github.com/Sec-ant/zxing-wasm) instead of (a patched version of) zxing-js.
+-   Support loading the WASM file from both the default location (JSDelivr CDN) as well as custom locations.
+
 ### Version 2.3.8
  -   `Scanner Paused` color tone changes.
  -   Misc code refactor.
