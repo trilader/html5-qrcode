@@ -39,7 +39,8 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         useBarCodeDetectorIfSupported: boolean,
         verbose: boolean,
-        logger: Logger) {
+        logger: Logger,
+        wasmLocationOverride: string | undefined = undefined) {
         this.verbose = verbose;
 
         // Use BarcodeDetector library if enabled by config and is supported.
@@ -51,10 +52,10 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
             // between 'BarcodeDetector' and 'zxing-js' to compensate for
             // quality gaps between the two.
             this.secondaryDecoder = new ZXingWasmQrcodeDecoder(
-                requestedFormats, verbose, logger);
+                requestedFormats, verbose, logger, wasmLocationOverride);
         } else {
             this.primaryDecoder = new ZXingWasmQrcodeDecoder(
-                requestedFormats, verbose, logger);
+                requestedFormats, verbose, logger, wasmLocationOverride);
         }
     }
 

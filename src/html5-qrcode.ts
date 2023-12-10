@@ -116,6 +116,10 @@ export interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
      * If true, all logs would be printed to console. False by default.
      */
     verbose: boolean | undefined;
+    /**
+     * If set, load WASM from specified location instead of from JSDelivr CDN. Specify path to zxing_full.wasm.
+     */
+    wasmLocationOverride: string | undefined;
 }
 
 /**
@@ -332,7 +336,8 @@ export class Html5Qrcode {
             this.getSupportedFormats(configOrVerbosityFlag),
             this.getUseBarCodeDetectorIfSupported(configObject),
             this.verbose,
-            this.logger);
+            this.logger,
+            this.getWasmLocationOverride(configObject));
 
         this.foreverScanTimeout;
         this.shouldScan = true;
@@ -945,6 +950,15 @@ export class Html5Qrcode {
         }
 
         return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
+    }
+
+    private getWasmLocationOverride(
+        config: Html5QrcodeFullConfig | undefined) : string | undefined {
+            if (isNullOrUndefined(config)) {
+                return undefined;
+            }
+
+            return config!.wasmLocationOverride;
     }
 
     /**

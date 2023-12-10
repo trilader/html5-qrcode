@@ -13,6 +13,7 @@
 import {
     ReadResult,
     readBarcodesFromImageData,
+    setZXingModuleOverrides,
     type DecodeHints,
 } from "zxing-wasm";
 
@@ -53,11 +54,28 @@ export class ZXingWasmQrcodeDecoder implements QrcodeDecoderAsync {
     private logger: Logger;
 
     private decodeHints: DecodeHints;
+    private wasmLocationOverride?: string;
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         verbose: boolean,
-        logger: Logger) {
+        logger: Logger,
+        wasmLocationOveride: string | undefined = undefined) {
+        if (typeof wasmLocationOveride !== "undefined") {
+            this.wasmLocationOverride = wasmLocationOveride;
+            if (!this.wasmLocationOverride.endsWith("/"))
+                this.wasmLocationOverride += "/";
+
+            setZXingModuleOverrides({
+                locateFile: (path, prefix) => {
+                    if (path.endsWith(".wasm")) {
+                        return `${this.wasmLocationOverride}${path}`;
+                    }
+                    return prefix + path;
+                },
+            });
+        }
+
         const formats = this.createZXingFormats(requestedFormats);
 
         this.decodeHints = {
