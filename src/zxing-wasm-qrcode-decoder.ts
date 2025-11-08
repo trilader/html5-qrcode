@@ -12,9 +12,9 @@
 
 import {
     ReadResult,
-    readBarcodesFromImageData,
-    setZXingModuleOverrides,
-    type DecodeHints,
+    readBarcodes,
+    prepareZXingModule,
+    ReaderOptions,
 } from "zxing-wasm/reader";
 
 import {
@@ -53,7 +53,7 @@ export class ZXingWasmQrcodeDecoder implements QrcodeDecoderAsync {
     private verbose: boolean;
     private logger: Logger;
 
-    private decodeHints: DecodeHints;
+    private readerOptions: ReaderOptions;
     private wasmLocationOverride?: string;
 
     public constructor(
@@ -66,19 +66,23 @@ export class ZXingWasmQrcodeDecoder implements QrcodeDecoderAsync {
             if (!this.wasmLocationOverride.endsWith("/"))
                 this.wasmLocationOverride += "/";
 
-            setZXingModuleOverrides({
-                locateFile: (path, prefix) => {
-                    if (path.endsWith(".wasm")) {
-                        return `${this.wasmLocationOverride}${path}`;
-                    }
-                    return prefix + path;
+            prepareZXingModule({
+                overrides: {
+                    locateFile: (path: string, prefix: string) => {
+                        if (path.endsWith(".wasm")) {
+                            return `${this.wasmLocationOverride}${path}`;
+                        }
+                        return prefix + path;
+                    },
                 },
+                equalityFn: Object.is,
+                fireImmediately: true,
             });
         }
 
         const formats = this.createZXingFormats(requestedFormats);
 
-        this.decodeHints = {
+        this.readerOptions = {
             tryHarder: false,
             formats: formats,
             maxNumberOfSymbols: 1,
@@ -100,7 +104,7 @@ export class ZXingWasmQrcodeDecoder implements QrcodeDecoderAsync {
 
     private async decode(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
         const ctx: CanvasRenderingContext2D = canvas.getContext("2d",  { willReadFrequently: true })!;
-        let result = await readBarcodesFromImageData(ctx.getImageData(0, 0, canvas.width, canvas.height), this.decodeHints);
+        let result = await readBarcodes(ctx.getImageData(0, 0, canvas.width, canvas.height), this.readerOptions);
         if (result.length === 0)
             throw ("No code found");
 

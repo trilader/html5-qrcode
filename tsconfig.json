@@ -17,6 +17,8 @@
         "preserveConstEnums": true,
         "noImplicitAny": true,
 
+        "skipLibCheck": true, // Need this because `node_modules/zxing-wasm/dist/cjs/reader/index.d.ts:1:28 - error TS1541: Type-only import of an ECMAScript module from a CommonJS module must have a 'resolution-mode' attribute.`
+
         // Allow javascript source to be built
         "allowJs": true
     },
