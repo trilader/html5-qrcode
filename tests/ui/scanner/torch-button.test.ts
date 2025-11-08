@@ -29,7 +29,7 @@ class FakeTorchCapability implements BooleanCameraCapability {
 describe("TorchButton#create()", () => {
     let parentElement: HTMLDivElement | undefined;
     let torchCapability: FakeTorchCapability | undefined;
-    let noOpFailureCallback: (_: string) => { /* no op. */ };
+    let noOpFailureCallback = (_: string) => { /* no op. */ };
     let options = { display: "inline-block", marginLeft: "10px" };
 
     before(() => {
