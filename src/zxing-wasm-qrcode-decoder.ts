@@ -15,7 +15,7 @@ import {
     readBarcodesFromImageData,
     setZXingModuleOverrides,
     type DecodeHints,
-} from "zxing-wasm";
+} from "zxing-wasm/reader";
 
 import {
     Html5QrcodeSupportedFormats,
